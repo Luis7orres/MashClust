@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Script 3: Cluster Genomes and Select Representatives
+Script 3: Cluster Genomes and Select Representatives (GCF Priority Version)
 """
 import sys
 import argparse
@@ -120,28 +120,42 @@ def main():
 
     print(f"[INFO] Created {len(clusters)} clusters.")
 
-    # 4. Select Representatives
+    # 4. Select Representatives (Prioritizing GCF)
     representatives = []
     np.random.seed(42) # Reproducibility
     
     for cluster in clusters:
         cluster_list = list(cluster)
         
+        # If cluster size is smaller than required reps, take all
         if len(cluster_list) <= args.num_representatives:
             representatives.extend(cluster_list)
         else:
             selected = []
             pool = list(cluster_list)
             
-            # Pick reference first if present
+            # A) Pick reference first if present (Reference protection)
             if ref_id and ref_id in pool:
                 selected.append(ref_id)
                 pool.remove(ref_id)
             
-            # Fill remaining slots randomly
+            # B) Prioritize GCFs in the remaining pool
+            # Separate pool into GCF and GCA groups
+            gcfs = [g for g in pool if g.startswith('GCF')]
+            gcas = [g for g in pool if not g.startswith('GCF')]
+            
+            # Shuffle each group internally to maintain randomness among equals
+            np.random.shuffle(gcfs)
+            np.random.shuffle(gcas)
+            
+            # Reconstruct ordered pool: GCFs always come before GCAs
+            ordered_pool = gcfs + gcas
+            
+            # C) Fill remaining slots following priority order (GCF > GCA)
             slots_left = args.num_representatives - len(selected)
             if slots_left > 0:
-                picked = np.random.choice(pool, size=slots_left, replace=False)
+                # Pick the first N from the prioritized pool
+                picked = ordered_pool[:slots_left]
                 selected.extend(picked)
             
             representatives.extend(selected)
@@ -164,7 +178,7 @@ def main():
     with open(out_dir / "clustering_data.json", "w") as f:
         json.dump(json_data, f)
         
-    print(f"[SUCCESS] Selected {len(representatives)} representatives.")
+    print(f"[SUCCESS] Selected {len(representatives)} representatives (Prioritizing GCF).")
 
 if __name__ == "__main__":
     main()

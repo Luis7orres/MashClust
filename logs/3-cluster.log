@@ -1,7 +1,0 @@
-[INFO] Threshold: 0.995 | Max Reps: 1
-[INFO] Parsing distance matrix...
-[INFO] Reference genome identified: GCF_025617355_1
-[INFO] Running Greedy Clustering...
-[INFO] Reference prioritized in clustering queue.
-[INFO] Created 837 clusters.
-[SUCCESS] Selected 837 representatives.
