@@ -69,7 +69,7 @@ rule sketch_and_filter:
     log:
         os.path.join(LOGS, "1-sketch.log")
     params:
-        bacteria = config["params"]["bacteria_name"],
+        filter_arg = f"-f {config['params']['bacteria_name']}" if config["params"].get("filter_enabled", True) else "--no-filter",
         kmer = config["params"]["mash"]["kmer_size"],
         sketch_size = config["params"]["mash"]["sketch_size"]
     threads: config["params"]["threads"]
@@ -78,7 +78,7 @@ rule sketch_and_filter:
         python3 {SCRIPTS}/1-mashclust-sketch.py \
             {input.genomes_dir} \
             -o {DIR_SK} \
-            -f "{params.bacteria}" \
+            {params.filter_arg} \
             -k {params.kmer} \
             -s {params.sketch_size} \
             --threads {threads} 2>&1 | tee {log}

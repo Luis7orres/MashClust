@@ -3,9 +3,9 @@
 # ============================================================================
 
 directories:
-  output_base: "/mnt/HDD12TB/pathogen_reruns/staphylococcus_aureus/mashclust"
+  output_base: ""
   scripts_dir: "scripts"
-  logs_dir: "/mnt/HDD12TB/pathogen_reruns/staphylococcus_aureus/mashclust/logs"
+  logs_dir: ""
 
 output_structure:
   download: "0-download"
@@ -22,8 +22,9 @@ results:
 # Main parameters
 params:
   threads: 28
-  accessions: "/mnt/HDD12TB/pathogen_reruns/staphylococcus_aureus/pipeline1/accessions.txt"
-  bacteria_name: "staphylococcus_aureus"
+  accessions: ""
+  filter_enabled: true
+  bacteria_name: ""
   id_threshold: 0.9980                    
   n_representatives: 2
   
@@ -42,4 +43,4 @@ params:
 # Reference genome (Optional, but recommended)
 reference:
   enabled: true
-  accession: "GCF_900458965_1"
+  accession: ""
