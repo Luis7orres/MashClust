@@ -1,0 +1,48 @@
+# ============================================================================
+# MashClust Configuration
+# ============================================================================
+
+directories:
+  output_base: ""
+  scripts_dir: "scripts"
+  logs_dir: ""
+
+output_structure:
+  download: "0-download"
+  sketch: "1-sketch"
+  distances: "2-distances"
+  cluster: "3-cluster"
+  visualize: "4-visualize"
+
+results:
+  base_dir: "results"
+  genomes_dir: "genomes"
+  accessions_file: "selected_accessions.txt"
+
+# Main parameters
+params:
+  threads: 28
+  accessions: ""
+  filter_enabled: true
+  bacteria_name: ""
+  id_threshold: 0.9980                    
+  n_representatives: 2
+  
+  mash:
+    sketch_size: 100000
+    kmer_size: 31
+    
+  download:
+    keep_zip: false
+    batch_size: 1000           # Genomes per batch
+    delay: 30                # Seconds between batches
+    max_retries: 5           # Retries per batch
+    use_api_key: true        # Use NCBI API key for higher rate limits
+    api_key: "b2f3f763bad4e52d0017cfb04f1363145d08"  # Get from https://www.ncbi.nlm.nih.gov/account/settings/
+
+# Reference genome(s) (Optional, but recommended)
+reference:
+  enabled: true
+  accessions: 
+    - ""
+    - ""

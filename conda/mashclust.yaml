@@ -1,0 +1,26 @@
+name: mashclust_env
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  # Bioinformatic Tools
+  - mash=2.3
+  - ncbi-datasets-cli
+  - quicktree
+  
+  # Workflow Management
+  - snakemake-minimal=7.32
+  - click=8.2.1
+  - jsonlines=4.0.0
+  
+  # Python Core & Science
+  - python=3.9
+  - numpy
+  - pandas
+  - scipy
+  - scikit-learn
+  
+  # Visualization
+  - plotly
+  - networkx
