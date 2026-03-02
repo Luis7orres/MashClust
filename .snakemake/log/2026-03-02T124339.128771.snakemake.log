@@ -1,0 +1,30 @@
+Assuming unrestricted shared filesystem usage.
+None
+host: sandb6-ThinkStation-P8
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 10
+Rules claiming more threads will be scaled down.
+Job stats:
+job                    count
+-------------------  -------
+all                        1
+calculate_distances        1
+cluster_genomes            1
+download_genomes           1
+finalize_results           1
+sketch_and_filter          1
+visualize_results          1
+total                      7
+
+Select jobs to execute...
+Execute 1 jobs...
+[Mon Mar  2 12:43:39 2026]
+localrule download_genomes:
+    input: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/pipeline1/accessions.txt
+    output: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/0-download/genomes, /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/0-download/genome_list.txt
+    log: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/logs/0-download.log
+    jobid: 3
+    reason: Forced execution
+    resources: tmpdir=/tmp
+

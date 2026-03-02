@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """
 Script 5: Finalize Results and Integrate with dataset-manager.py
+Restored with --genomes-subdir support while maintaining new features.
 """
 import argparse
 import shutil
@@ -43,6 +44,7 @@ def main():
     parser.add_argument("--representatives", required=True, help="List of representative genome paths")
     parser.add_argument("--out-dir", required=True, help="Directory to save the results")
     parser.add_argument("--acc-file", required=True, help="Path for the selected_accessions.txt output")
+    parser.add_argument("--genomes-subdir", default="uncompressed", help="Subdirectory for uncompressed genomes")
     parser.add_argument("--dataset-manager", required=True, help="Absolute path to dataset-manager.py")
     parser.add_argument("--api-key", default=None, help="NCBI API Key for higher rate limits")
     args = parser.parse_args()
@@ -60,7 +62,7 @@ def main():
 
     # Output directory setup
     base_dir = Path(args.out_dir) 
-    uncompressed_root = base_dir / "uncompressed"
+    uncompressed_root = base_dir / args.genomes_subdir
     base_dir.mkdir(parents=True, exist_ok=True)
     uncompressed_root.mkdir(parents=True, exist_ok=True)
 

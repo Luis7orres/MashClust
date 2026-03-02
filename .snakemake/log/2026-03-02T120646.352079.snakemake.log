@@ -1,0 +1,65 @@
+Assuming unrestricted shared filesystem usage.
+None
+host: sandb6-ThinkStation-P8
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 8
+Rules claiming more threads will be scaled down.
+Job stats:
+job                    count
+-------------------  -------
+all                        1
+calculate_distances        1
+cluster_genomes            1
+download_genomes           1
+finalize_results           1
+sketch_and_filter          1
+visualize_results          1
+total                      7
+
+Select jobs to execute...
+Execute 1 jobs...
+[Mon Mar  2 12:06:46 2026]
+localrule download_genomes:
+    input: /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/pipeline1/accessions.txt
+    output: /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/MARGE/0-download/genomes, /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/MARGE/0-download/genome_list.txt
+    log: /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/MARGE/logs/0-download.log
+    jobid: 3
+    reason: Missing output files: /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/MARGE/0-download/genomes
+    resources: tmpdir=/tmp
+
+RuleException:
+CalledProcessError in file "/home/sandb6/scripts/MashClust/Snakefile", line 51:
+Command 'set -euo pipefail;  
+        python3 scripts/0-mashclust-download.py             /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/pipeline1/accessions.txt             -o /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/MARGE/0-download                          --batch-size 1000             --delay 30             --max-retries 5             --api-key d049639a1f4590180b14464bd6a7229d1307 2>&1 | tee /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/MARGE/logs/0-download.log' returned non-zero exit status 1.
+[Mon Mar  2 12:06:48 2026]
+Error in rule download_genomes:
+    message: None
+    jobid: 3
+    input: /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/pipeline1/accessions.txt
+    output: /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/MARGE/0-download/genomes, /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/MARGE/0-download/genome_list.txt
+    log: /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/MARGE/logs/0-download.log (check log file(s) for error details)
+    shell:
+        
+        python3 scripts/0-mashclust-download.py             /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/pipeline1/accessions.txt             -o /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/MARGE/0-download                          --batch-size 1000             --delay 30             --max-retries 5             --api-key d049639a1f4590180b14464bd6a7229d1307 2>&1 | tee /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/MARGE/logs/0-download.log
+        
+        (command exited with non-zero exit code)
+Removing output files of failed job download_genomes since they might be corrupted:
+/mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/MARGE/0-download/genomes
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look below for error messages
+[Mon Mar  2 12:06:48 2026]
+Error in rule download_genomes:
+    message: None
+    jobid: 3
+    input: /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/pipeline1/accessions.txt
+    output: /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/MARGE/0-download/genomes, /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/MARGE/0-download/genome_list.txt
+    log: /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/MARGE/logs/0-download.log (check log file(s) for error details)
+    shell:
+        
+        python3 scripts/0-mashclust-download.py             /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/pipeline1/accessions.txt             -o /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/MARGE/0-download                          --batch-size 1000             --delay 30             --max-retries 5             --api-key d049639a1f4590180b14464bd6a7229d1307 2>&1 | tee /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/MARGE/logs/0-download.log
+        
+        (command exited with non-zero exit code)
+Complete log(s): /home/sandb6/scripts/MashClust/.snakemake/log/2026-03-02T120646.352079.snakemake.log
+WorkflowError:
+At least one job did not complete successfully.

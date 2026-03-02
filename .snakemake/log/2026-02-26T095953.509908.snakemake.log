@@ -58,3 +58,5 @@ localrule calculate_distances:
     threads: 10
     resources: tmpdir=/tmp
 
+WorkflowError:
+At least one job did not complete successfully.

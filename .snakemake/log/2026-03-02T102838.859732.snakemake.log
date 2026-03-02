@@ -1,0 +1,50 @@
+Assuming unrestricted shared filesystem usage.
+None
+host: sandb6-ThinkStation-P8
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 10
+Rules claiming more threads will be scaled down.
+Job stats:
+job                    count
+-------------------  -------
+all                        1
+calculate_distances        1
+cluster_genomes            1
+download_genomes           1
+finalize_results           1
+sketch_and_filter          1
+visualize_results          1
+total                      7
+
+Select jobs to execute...
+Execute 1 jobs...
+[Mon Mar  2 10:28:39 2026]
+localrule download_genomes:
+    input: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/pipeline1/accessions.txt
+    output: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/0-download/genomes, /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/0-download/genome_list.txt
+    log: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/logs/0-download.log
+    jobid: 3
+    reason: Missing output files: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/0-download/genomes; Params have changed since last execution: Union of exclusive params before and now across all output: before: '--api-key b2f3f763bad4e52d0017cfb04f1363145d08' now: '--api-key d049639a1f4590180b14464bd6a7229d1307' 
+    resources: tmpdir=/tmp
+
+Terminating processes on user request, this might take some time.
+RuleException:
+CalledProcessError in file "/home/sandb6/scripts/MashClust/Snakefile", line 51:
+Command 'set -euo pipefail;  
+        python3 scripts/0-mashclust-download.py             /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/pipeline1/accessions.txt             -o /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/0-download                          --batch-size 1000             --delay 30             --max-retries 5             --api-key d049639a1f4590180b14464bd6a7229d1307 2>&1 | tee /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/logs/0-download.log' died with <Signals.SIGINT: 2>.
+[Mon Mar  2 12:43:30 2026]
+Error in rule download_genomes:
+    message: None
+    jobid: 3
+    input: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/pipeline1/accessions.txt
+    output: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/0-download/genomes, /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/0-download/genome_list.txt
+    log: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/logs/0-download.log (check log file(s) for error details)
+    shell:
+        
+        python3 scripts/0-mashclust-download.py             /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/pipeline1/accessions.txt             -o /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/0-download                          --batch-size 1000             --delay 30             --max-retries 5             --api-key d049639a1f4590180b14464bd6a7229d1307 2>&1 | tee /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/logs/0-download.log
+        
+        (command exited with non-zero exit code)
+Complete log(s): /home/sandb6/scripts/MashClust/.snakemake/log/2026-03-02T102838.859732.snakemake.log
+WorkflowError:
+At least one job did not complete successfully.

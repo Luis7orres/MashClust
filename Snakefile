@@ -160,7 +160,8 @@ rule finalize_results:
         python3 {SCRIPTS}/5-mashclust-finalize.py \
             --non-targets {input.non_targets} \
             --representatives {input.representatives} \
-            --out-dir {output.genomes_dir} \
+            --out-dir {DIR_RES} \
+            --genomes-subdir {config[results][genomes_dir]} \
             --acc-file {output.acc_file} \
             --dataset-manager {params.dm_script} \
             {params.api_key_arg} 2>&1 | tee {log}

@@ -1,0 +1,9 @@
+Assuming unrestricted shared filesystem usage.
+None
+host: sandb6-ThinkStation-P8
+Building DAG of jobs...
+MissingInputException in rule download_genomes in file "/home/sandb6/scripts/MashClust/Snakefile", line 35:
+Missing input files for rule download_genomes:
+    output: 0-download/genomes, 0-download/genome_list.txt
+    affected files:
+        

@@ -1,0 +1,45 @@
+Assuming unrestricted shared filesystem usage.
+None
+host: sandb6-ThinkStation-P8
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 10
+Rules claiming more threads will be scaled down.
+Job stats:
+job                 count
+----------------  -------
+all                     1
+finalize_results        1
+total                   2
+
+Select jobs to execute...
+Execute 1 jobs...
+[Mon Mar  2 10:08:48 2026]
+localrule finalize_results:
+    input: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/1-sketch/non_targets.txt, /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/3-cluster/representatives.txt
+    output: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/genomes/selected_accessions.txt, /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/genomes/uncompressed
+    log: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/logs/5-finalize.log
+    jobid: 1
+    reason: Forced execution
+    resources: tmpdir=/tmp
+
+Terminating processes on user request, this might take some time.
+RuleException:
+CalledProcessError in file "/home/sandb6/scripts/MashClust/Snakefile", line 159:
+Command 'set -euo pipefail;  
+        python3 scripts/5-mashclust-finalize.py             --non-targets /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/1-sketch/non_targets.txt             --representatives /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/3-cluster/representatives.txt             --out-dir /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/genomes/uncompressed             --acc-file /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/genomes/selected_accessions.txt             --dataset-manager /home/sandb6/scripts/MashClust/scripts/5.1-dataset-manager.py             --api-key b2f3f763bad4e52d0017cfb04f1363145d08 2>&1 | tee /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/logs/5-finalize.log' died with <Signals.SIGINT: 2>.
+[Mon Mar  2 10:11:36 2026]
+Error in rule finalize_results:
+    message: None
+    jobid: 1
+    input: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/1-sketch/non_targets.txt, /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/3-cluster/representatives.txt
+    output: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/genomes/selected_accessions.txt, /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/genomes/uncompressed
+    log: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/logs/5-finalize.log (check log file(s) for error details)
+    shell:
+        
+        python3 scripts/5-mashclust-finalize.py             --non-targets /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/1-sketch/non_targets.txt             --representatives /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/3-cluster/representatives.txt             --out-dir /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/genomes/uncompressed             --acc-file /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/genomes/selected_accessions.txt             --dataset-manager /home/sandb6/scripts/MashClust/scripts/5.1-dataset-manager.py             --api-key b2f3f763bad4e52d0017cfb04f1363145d08 2>&1 | tee /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/logs/5-finalize.log
+        
+        (command exited with non-zero exit code)
+Complete log(s): /home/sandb6/scripts/MashClust/.snakemake/log/2026-03-02T100848.542325.snakemake.log
+WorkflowError:
+At least one job did not complete successfully.
