@@ -37,6 +37,7 @@ rule download_genomes:
         accessions = config["params"]["accessions"]
     output:
         genomes_dir = directory(os.path.join(DIR_DL, "genomes")),
+        reports_dir = directory(os.path.join(DIR_DL, "reports")),
         genome_list = os.path.join(DIR_DL, "genome_list.txt")
     log:
         os.path.join(LOGS, "0-download.log")
@@ -59,9 +60,33 @@ rule download_genomes:
             {params.api_key_arg} 2>&1 | tee {log}
         """
 
+rule filter_quality:
+    input:
+        reports_dir = rules.download_genomes.output.reports_dir,
+        genomes_dir = rules.download_genomes.output.genomes_dir
+    output:
+        blacklist = os.path.join(DIR_DL, "quality_report_accessions.txt"),
+        report = os.path.join(DIR_DL, "quality_report.txt")
+    log:
+        os.path.join(LOGS, "0.5-quality_filter.log")
+    params:
+        threshold = config["params"]["quality_filter"]["threshold"],
+        clean_arg = lambda wildcards: f"--clean-dir {DIR_DL}/genomes" if config["params"]["quality_filter"]["enabled"] else "",
+        whitelist_arg = lambda wildcards: f"--whitelist {' '.join(config['reference']['accession'])}" if config["reference"]["enabled"] else ""
+    shell:
+        """
+        python3 {SCRIPTS}/0.5-checkm-filter.py \
+            {input.reports_dir} \
+            --threshold {params.threshold} \
+            --output {output.report} \
+            {params.clean_arg} \
+            {params.whitelist_arg} 2>&1 | tee {log}
+        """
+
 rule sketch_and_filter:
     input:
-        genomes_dir = rules.download_genomes.output.genomes_dir
+        genomes_dir = rules.download_genomes.output.genomes_dir,
+        quality_check = rules.filter_quality.output.blacklist
     output:
         sketch = os.path.join(DIR_SK, "genomes_sketch.msh"),
         target_list = os.path.join(DIR_SK, "targets.txt"),

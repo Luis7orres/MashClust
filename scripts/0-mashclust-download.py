@@ -98,11 +98,13 @@ def main():
     out_dir = Path(args.output_dir)
     temp_dir = out_dir / "temp_downloads"
     genomes_dir = out_dir / "genomes"
+    reports_dir = out_dir / "reports"
     failed_dir = out_dir / "failed_batches"
     
     # Create directories
     temp_dir.mkdir(parents=True, exist_ok=True)
     genomes_dir.mkdir(parents=True, exist_ok=True)
+    reports_dir.mkdir(parents=True, exist_ok=True)
     failed_dir.mkdir(parents=True, exist_ok=True)
 
     # Load and validate accessions
@@ -220,6 +222,9 @@ def main():
                 genome_meta = {}
                 for filename in z.namelist():
                     if filename.endswith('assembly_data_report.jsonl'):
+                        report_dest = reports_dir / f"batch_{current_batch_num}.jsonl"
+                        with z.open(filename) as source, open(report_dest, 'wb') as target:
+                            target.write(source.read())
                         with z.open(filename) as f:
                             for line in f:
                                 data = json.loads(line.decode('utf-8'))

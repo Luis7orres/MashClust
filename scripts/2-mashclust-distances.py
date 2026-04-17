@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Script 2: Calculate Distances (Zero-RAM Streaming Version)
+Script 3: Calculate Distances (Zero-RAM Streaming Version)
 """
 import subprocess
 import sys
@@ -11,7 +11,7 @@ from pathlib import Path
 
 def main():
     # 1. Argument Parsing
-    parser = argparse.ArgumentParser(description="Step 2: Calculate Distances")
+    parser = argparse.ArgumentParser(description="Step 3: Calculate Distances")
     parser.add_argument("input_dir", help="Directory with .msh file")
     parser.add_argument("-o", "--output-dir", required=True)
     parser.add_argument("--threads", type=int, default=1)

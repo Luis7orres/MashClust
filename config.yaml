@@ -31,6 +31,10 @@ params:
   mash:
     sketch_size: 100000
     kmer_size: 31
+
+  quality_filter:
+    enabled: true             # Set to false to skip quality filtering
+    threshold: 90.0           # Completeness threshold (%)
     
   download:
     keep_zip: false
