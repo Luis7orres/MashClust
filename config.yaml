@@ -31,7 +31,6 @@ params:
   mash:
     sketch_size: 100000
     kmer_size: 31
-    chunk_size: 2000
     
   download:
     keep_zip: false

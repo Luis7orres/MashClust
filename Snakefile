@@ -93,7 +93,6 @@ rule calculate_distances:
     log:
         os.path.join(LOGS, "2-distances.log")
     params:
-        chunk_size = config["params"]["mash"].get("chunk_size", 2000),
         input_dir = DIR_SK
     threads: config["params"]["threads"]
     shell:
@@ -102,7 +101,6 @@ rule calculate_distances:
             {params.input_dir} \
             -o {DIR_DIST} \
             --threads {threads} \
-            --chunk-size {params.chunk_size} 2>&1 | tee {log}
         """
 
 rule cluster_genomes:

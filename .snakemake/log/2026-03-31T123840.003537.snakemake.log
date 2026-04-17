@@ -1,0 +1,85 @@
+Assuming unrestricted shared filesystem usage.
+None
+host: sandb6-ThinkStation-P8
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 10
+Rules claiming more threads will be scaled down.
+Job stats:
+job                    count
+-------------------  -------
+all                        1
+calculate_distances        1
+cluster_genomes            1
+finalize_results           1
+visualize_results          1
+total                      5
+
+Select jobs to execute...
+Execute 1 jobs...
+[Tue Mar 31 12:38:40 2026]
+localrule calculate_distances:
+    input: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/1-sketch/genomes_sketch.msh
+    output: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/2-distances/distances.txt
+    log: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/logs/2-distances.log
+    jobid: 5
+    reason: Code has changed since last execution; Params have changed since last execution: Union of exclusive params before and now across all output: before: 2000 now: <nothing exclusive> 
+    threads: 10
+    resources: tmpdir=/tmp
+
+[Fri Apr  3 11:40:07 2026]
+Finished jobid: 5 (Rule: calculate_distances)
+1 of 5 steps (20%) done
+Select jobs to execute...
+Execute 1 jobs...
+[Fri Apr  3 11:40:07 2026]
+localrule cluster_genomes:
+    input: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/2-distances/distances.txt
+    output: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/3-cluster/representatives.txt, /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/3-cluster/clustering_data.json
+    log: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/logs/3-cluster.log
+    jobid: 4
+    reason: Input files updated by another job: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/2-distances/distances.txt
+    resources: tmpdir=/tmp
+
+[Fri Apr  3 20:55:02 2026]
+Finished jobid: 4 (Rule: cluster_genomes)
+2 of 5 steps (40%) done
+Select jobs to execute...
+Execute 2 jobs...
+[Fri Apr  3 20:55:02 2026]
+localrule visualize_results:
+    input: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/3-cluster/clustering_data.json
+    output: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/4-visualize/cluster_distribution.html
+    log: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/logs/4-visualize.log
+    jobid: 6
+    reason: Missing output files: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/4-visualize/cluster_distribution.html; Input files updated by another job: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/3-cluster/clustering_data.json
+    resources: tmpdir=/tmp
+
+[Fri Apr  3 20:55:03 2026]
+localrule finalize_results:
+    input: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/1-sketch/non_targets.txt, /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/3-cluster/representatives.txt
+    output: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/genomes/selected_accessions.txt, /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/genomes/uncompressed
+    log: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/logs/5-finalize.log
+    jobid: 1
+    reason: Input files updated by another job: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/3-cluster/representatives.txt
+    resources: tmpdir=/tmp
+
+[Fri Apr  3 20:58:14 2026]
+Finished jobid: 1 (Rule: finalize_results)
+3 of 5 steps (60%) done
+[Fri Apr  3 22:04:52 2026]
+Finished jobid: 6 (Rule: visualize_results)
+4 of 5 steps (80%) done
+Select jobs to execute...
+Execute 1 jobs...
+[Fri Apr  3 22:04:52 2026]
+localrule all:
+    input: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/genomes/selected_accessions.txt, /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/4-visualize/cluster_distribution.html
+    jobid: 0
+    reason: Input files updated by another job: /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/4-visualize/cluster_distribution.html, /mnt/HDD12TB/pathogen_reruns/streptococcus_dysgalactiae_pyogenes_equi/marge/genomes/selected_accessions.txt
+    resources: tmpdir=/tmp
+
+[Fri Apr  3 22:04:52 2026]
+Finished jobid: 0 (Rule: all)
+5 of 5 steps (100%) done
+Complete log(s): /home/sandb6/scripts/MARGE/.snakemake/log/2026-03-31T123840.003537.snakemake.log

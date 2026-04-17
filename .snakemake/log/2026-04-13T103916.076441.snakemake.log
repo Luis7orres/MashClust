@@ -1,0 +1,135 @@
+Assuming unrestricted shared filesystem usage.
+None
+host: sandb6-ThinkStation-P8
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 10
+Rules claiming more threads will be scaled down.
+Job stats:
+job                    count
+-------------------  -------
+all                        1
+calculate_distances        1
+cluster_genomes            1
+download_genomes           1
+finalize_results           1
+sketch_and_filter          1
+visualize_results          1
+total                      7
+
+Select jobs to execute...
+Execute 1 jobs...
+[Mon Apr 13 10:39:16 2026]
+localrule download_genomes:
+    input: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/pipeline1/accessions.txt
+    output: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/0-download/genomes, /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/0-download/genome_list.txt
+    log: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/logs/0-download.log
+    jobid: 3
+    reason: Missing output files: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/0-download/genomes
+    resources: tmpdir=/tmp
+
+[Mon Apr 13 10:58:29 2026]
+Finished jobid: 3 (Rule: download_genomes)
+1 of 7 steps (14%) done
+Select jobs to execute...
+Execute 1 jobs...
+[Mon Apr 13 10:58:29 2026]
+localrule sketch_and_filter:
+    input: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/0-download/genomes
+    output: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/1-sketch/genomes_sketch.msh, /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/1-sketch/targets.txt, /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/1-sketch/non_targets.txt
+    log: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/logs/1-sketch.log
+    jobid: 2
+    reason: Missing output files: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/1-sketch/genomes_sketch.msh, /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/1-sketch/non_targets.txt; Input files updated by another job: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/0-download/genomes
+    threads: 10
+    resources: tmpdir=/tmp
+
+[Mon Apr 13 10:59:19 2026]
+Finished jobid: 2 (Rule: sketch_and_filter)
+2 of 7 steps (29%) done
+Select jobs to execute...
+Execute 1 jobs...
+[Mon Apr 13 10:59:19 2026]
+localrule calculate_distances:
+    input: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/1-sketch/genomes_sketch.msh
+    output: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/2-distances/distances.txt
+    log: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/logs/2-distances.log
+    jobid: 5
+    reason: Missing output files: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/2-distances/distances.txt; Input files updated by another job: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/1-sketch/genomes_sketch.msh
+    threads: 10
+    resources: tmpdir=/tmp
+
+[Mon Apr 13 11:02:06 2026]
+Finished jobid: 5 (Rule: calculate_distances)
+3 of 7 steps (43%) done
+Select jobs to execute...
+Execute 1 jobs...
+[Mon Apr 13 11:02:06 2026]
+localrule cluster_genomes:
+    input: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/2-distances/distances.txt
+    output: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/3-cluster/representatives.txt, /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/3-cluster/clustering_data.json
+    log: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/logs/3-cluster.log
+    jobid: 4
+    reason: Missing output files: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/3-cluster/clustering_data.json, /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/3-cluster/representatives.txt; Input files updated by another job: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/2-distances/distances.txt
+    resources: tmpdir=/tmp
+
+[Mon Apr 13 11:02:07 2026]
+Finished jobid: 4 (Rule: cluster_genomes)
+4 of 7 steps (57%) done
+Select jobs to execute...
+Execute 2 jobs...
+[Mon Apr 13 11:02:07 2026]
+localrule visualize_results:
+    input: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/3-cluster/clustering_data.json
+    output: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/4-visualize/cluster_distribution.html
+    log: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/logs/4-visualize.log
+    jobid: 6
+    reason: Missing output files: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/4-visualize/cluster_distribution.html; Input files updated by another job: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/3-cluster/clustering_data.json
+    resources: tmpdir=/tmp
+
+[Mon Apr 13 11:02:07 2026]
+localrule finalize_results:
+    input: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/1-sketch/non_targets.txt, /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/3-cluster/representatives.txt
+    output: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/genomes/selected_accessions.txt, /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/genomes/uncompressed
+    log: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/logs/5-finalize.log
+    jobid: 1
+    reason: Missing output files: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/genomes/selected_accessions.txt; Input files updated by another job: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/1-sketch/non_targets.txt, /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/3-cluster/representatives.txt
+    resources: tmpdir=/tmp
+
+[Mon Apr 13 11:04:22 2026]
+Finished jobid: 6 (Rule: visualize_results)
+5 of 7 steps (71%) done
+RuleException:
+CalledProcessError in file "/home/sandb6/scripts/MARGE/Snakefile", line 157:
+Command 'set -euo pipefail;  
+        python3 scripts/5-mashclust-finalize.py             --non-targets /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/1-sketch/non_targets.txt             --representatives /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/3-cluster/representatives.txt             --out-dir /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/genomes             --genomes-subdir uncompressed             --acc-file /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/genomes/selected_accessions.txt             --dataset-manager /home/sandb6/scripts/MARGE/scripts/5.1-dataset-manager.py             --api-key d049639a1f4590180b14464bd6a7229d1307 2>&1 | tee /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/logs/5-finalize.log' returned non-zero exit status 1.
+[Mon Apr 13 15:29:55 2026]
+Error in rule finalize_results:
+    message: None
+    jobid: 1
+    input: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/1-sketch/non_targets.txt, /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/3-cluster/representatives.txt
+    output: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/genomes/selected_accessions.txt, /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/genomes/uncompressed
+    log: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/logs/5-finalize.log (check log file(s) for error details)
+    shell:
+        
+        python3 scripts/5-mashclust-finalize.py             --non-targets /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/1-sketch/non_targets.txt             --representatives /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/3-cluster/representatives.txt             --out-dir /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/genomes             --genomes-subdir uncompressed             --acc-file /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/genomes/selected_accessions.txt             --dataset-manager /home/sandb6/scripts/MARGE/scripts/5.1-dataset-manager.py             --api-key d049639a1f4590180b14464bd6a7229d1307 2>&1 | tee /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/logs/5-finalize.log
+        
+        (command exited with non-zero exit code)
+Removing output files of failed job finalize_results since they might be corrupted:
+/mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/genomes/selected_accessions.txt, /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/genomes/uncompressed
+Shutting down, this might take some time.
+Exiting because a job execution failed. Look below for error messages
+[Mon Apr 13 15:30:36 2026]
+Error in rule finalize_results:
+    message: None
+    jobid: 1
+    input: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/1-sketch/non_targets.txt, /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/3-cluster/representatives.txt
+    output: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/genomes/selected_accessions.txt, /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/genomes/uncompressed
+    log: /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/logs/5-finalize.log (check log file(s) for error details)
+    shell:
+        
+        python3 scripts/5-mashclust-finalize.py             --non-targets /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/1-sketch/non_targets.txt             --representatives /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/3-cluster/representatives.txt             --out-dir /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/genomes             --genomes-subdir uncompressed             --acc-file /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/genomes/selected_accessions.txt             --dataset-manager /home/sandb6/scripts/MARGE/scripts/5.1-dataset-manager.py             --api-key d049639a1f4590180b14464bd6a7229d1307 2>&1 | tee /mnt/HDD12TB/pathogen_reruns/klebsiella_pneumoniae/MARGE/logs/5-finalize.log
+        
+        (command exited with non-zero exit code)
+Complete log(s): /home/sandb6/scripts/MARGE/.snakemake/log/2026-04-13T103916.076441.snakemake.log
+WorkflowError:
+At least one job did not complete successfully.

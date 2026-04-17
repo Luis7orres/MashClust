@@ -1,0 +1,41 @@
+Assuming unrestricted shared filesystem usage.
+None
+host: sandb6-ThinkStation-P8
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 5
+Rules claiming more threads will be scaled down.
+Job stats:
+job                 count
+----------------  -------
+all                     1
+finalize_results        1
+total                   2
+
+Select jobs to execute...
+Execute 1 jobs...
+[Tue Mar 24 10:04:46 2026]
+localrule finalize_results:
+    input: /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/MARGE/1-sketch/non_targets.txt, /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/MARGE/3-cluster/representatives.txt
+    output: /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/MARGE/genomes/selected_accessions.txt, /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/MARGE/genomes/uncompressed
+    log: /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/MARGE/logs/5-finalize.log
+    jobid: 1
+    reason: Missing output files: /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/MARGE/genomes/selected_accessions.txt
+    resources: tmpdir=/tmp
+
+[Tue Mar 24 10:05:16 2026]
+Finished jobid: 1 (Rule: finalize_results)
+1 of 2 steps (50%) done
+Select jobs to execute...
+Execute 1 jobs...
+[Tue Mar 24 10:05:16 2026]
+localrule all:
+    input: /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/MARGE/genomes/selected_accessions.txt, /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/MARGE/4-visualize/cluster_distribution.html
+    jobid: 0
+    reason: Input files updated by another job: /mnt/HDD12TB/pathogen_reruns/vibrio_parahaemolyticus/MARGE/genomes/selected_accessions.txt
+    resources: tmpdir=/tmp
+
+[Tue Mar 24 10:05:16 2026]
+Finished jobid: 0 (Rule: all)
+2 of 2 steps (100%) done
+Complete log(s): /home/sandb6/scripts/MARGE/.snakemake/log/2026-03-24T100446.326144.snakemake.log
