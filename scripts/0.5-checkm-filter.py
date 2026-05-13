@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """
-1-checkm-filter.py - MARGE Quality Filter
+0.5-checkm-filter.py - MARGE Quality Filter
 Logic:
-1. Flag 'suppressed' assemblies.
-2. Flag genomes below completeness threshold.
-3. Flag genomes with missing CheckM data.
-All flagged genomes are added to the blacklist.
-If --clean-dir is provided, flagged genome folders are physically deleted.
+  Each of the three filter stages is independently togglable:
+    --filter-suppressed   : blacklist assemblies with status 'suppressed'
+    --filter-no-checkm    : blacklist records missing CheckM metadata
+    --filter-completeness : blacklist genomes below --threshold
+  Any combination is valid. All flagged genomes go to the blacklist.
+  If --clean-dir is provided, flagged genome folders are physically deleted.
 """
 
 import json
@@ -19,15 +20,10 @@ from pathlib import Path
 # ── helpers ───────────────────────────────────────────────────────────────────
 
 def accession_with_underscore(accession: str) -> str:
-    """Standardize accession format for folder matching (GCA_001.1 -> GCA_001_1)."""
     return accession.replace(".", "_")
 
 
 def parse_report(record: dict) -> dict:
-    """
-    Extract metadata from NCBI JSONL records.
-    Tries both snake_case and camelCase field names for robustness.
-    """
     acc = (record.get("current_accession")
            or record.get("currentAccession")
            or record.get("accession", "UNKNOWN"))
@@ -55,23 +51,16 @@ def parse_report(record: dict) -> dict:
         "status":          status,
         "sequencing_tech": tech,
         "genome_notes":    notes if isinstance(notes, list) else [],
-        "completeness":    comp,   # None if missing
-        "contamination":   cont,   # None if missing
+        "completeness":    comp,
+        "contamination":   cont,
         "marker_set":      mset,
     }
 
 
 def load_jsonl_file(path: Path) -> list[dict]:
-    """
-    Accepts both:
-      - true JSONL  (one JSON object per line)
-      - a single JSON object / array spanning multiple lines
-    Returns a flat list of raw record dicts.
-    """
     records = []
     raw = path.read_text(encoding="utf-8").strip()
 
-    # Try line-by-line JSONL first
     lines = [l.strip() for l in raw.splitlines() if l.strip()]
     parsed_lines = []
     for line in lines:
@@ -103,29 +92,42 @@ def load_jsonl_file(path: Path) -> list[dict]:
 
 # ── report builder ────────────────────────────────────────────────────────────
 
-def build_report(passing, failing, suppressed, no_checkm, threshold, folder) -> str:
+def build_report(passing, failing, suppressed, no_checkm,
+                 threshold, folder, filters_active: dict,
+                 blacklist_count: int) -> str:
     SEP  = "=" * 72
     DASH = "─" * 72
     total = len(passing) + len(failing) + len(suppressed) + len(no_checkm)
-    lines = []
 
-    lines += [
+    active_labels = []
+    if filters_active["suppressed"]:
+        active_labels.append("suppressed")
+    if filters_active["no_checkm"]:
+        active_labels.append("missing CheckM")
+    if filters_active["completeness"]:
+        active_labels.append(f"completeness < {threshold}%")
+    active_str = ", ".join(active_labels) if active_labels else "none"
+
+    lines = [
         SEP,
         "  MARGE GENOME COMPLETENESS FILTER REPORT",
         SEP,
         f"  Folder          : {Path(folder).resolve()}",
+        f"  Active filters  : {active_str}",
         f"  Threshold       : completeness >= {threshold}%",
         f"  Total records   : {total}",
         f"  Passing         : {len(passing)}",
-        f"  Failing (<{threshold}%) : {len(failing)}",
-        f"  Suppressed      : {len(suppressed)}",
-        f"  No CheckM data  : {len(no_checkm)}",
-        f"  Blacklisted     : {len(failing) + len(suppressed) + len(no_checkm)}",
+        f"  Failing (<{threshold}%) : {len(failing) if filters_active['completeness'] else 0}",
+        f"  Suppressed      : {len(suppressed) if filters_active['suppressed'] else 0}",
+        f"  No CheckM data  : {len(no_checkm) if filters_active['no_checkm'] else 0}",
+        f"  Blacklisted     : {blacklist_count}",
         SEP,
     ]
 
     if suppressed:
-        lines += ["", DASH, "  SUPPRESSED ASSEMBLIES", DASH]
+        label = "SUPPRESSED ASSEMBLIES (BLACKLISTED)" if filters_active["suppressed"] \
+                else "SUPPRESSED ASSEMBLIES (filter OFF — kept)"
+        lines += ["", DASH, f"  {label}", DASH]
         for i, g in enumerate(suppressed, 1):
             lines.append(
                 f"\n  [{i}] {g['accession']}"
@@ -135,7 +137,9 @@ def build_report(passing, failing, suppressed, no_checkm, threshold, folder) -> 
             )
 
     if failing:
-        lines += ["", DASH, f"  FAILING GENOMES  (completeness < {threshold}%)", DASH]
+        label = f"FAILING GENOMES  (completeness < {threshold}%)" if filters_active["completeness"] \
+                else f"FAILING GENOMES  (completeness < {threshold}%) (filter OFF — kept)"
+        lines += ["", DASH, f"  {label}", DASH]
         for i, g in enumerate(failing, 1):
             notes_str = "; ".join(g["genome_notes"]) if g["genome_notes"] else "none"
             comp_str  = f"{g['completeness']:.2f}%" if g["completeness"] is not None else "N/A"
@@ -153,7 +157,9 @@ def build_report(passing, failing, suppressed, no_checkm, threshold, folder) -> 
             )
 
     if no_checkm:
-        lines += ["", DASH, "  RECORDS WITHOUT CheckM DATA  (blacklisted)", DASH]
+        label = "RECORDS WITHOUT CheckM DATA (BLACKLISTED)" if filters_active["no_checkm"] \
+                else "RECORDS WITHOUT CheckM DATA (filter OFF — kept)"
+        lines += ["", DASH, f"  {label}", DASH]
         for g in no_checkm:
             lines.append(f"  {g['accession']}  |  {g['organism']}")
 
@@ -171,7 +177,7 @@ def build_report(passing, failing, suppressed, no_checkm, threshold, folder) -> 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Filter out poor quality or suppressed genomes."
+        description="Filter poor-quality or suppressed genomes. Each stage is independently togglable."
     )
     parser.add_argument("json_folder",  help="Folder with .jsonl / .json reports")
     parser.add_argument("--threshold",  type=float, default=90.0,
@@ -180,10 +186,27 @@ def main():
                         help="Report file path (pipeline expects quality_report.txt)")
     parser.add_argument("--clean-dir",
                         help="Optional: genome folder — flagged subfolders will be deleted")
-    # --- NUEVO: Argumento de la whitelist ---
-    parser.add_argument("--whitelist", nargs='*', default=[],
+    parser.add_argument("--whitelist",  nargs="*", default=[],
                         help="Accessions to always keep regardless of quality")
+
+    # ── per-stage filter toggles ──────────────────────────────────────────────
+    parser.add_argument("--filter-suppressed",   dest="filter_suppressed",
+                        action=argparse.BooleanOptionalAction, default=True,
+                        help="Blacklist assemblies with status 'suppressed' (default: on)")
+    parser.add_argument("--filter-no-checkm",    dest="filter_no_checkm",
+                        action=argparse.BooleanOptionalAction, default=True,
+                        help="Blacklist records missing CheckM metadata (default: on)")
+    parser.add_argument("--filter-completeness", dest="filter_completeness",
+                        action=argparse.BooleanOptionalAction, default=True,
+                        help="Blacklist genomes below --threshold (default: on)")
+
     args = parser.parse_args()
+
+    filters_active = {
+        "suppressed":   args.filter_suppressed,
+        "no_checkm":    args.filter_no_checkm,
+        "completeness": args.filter_completeness,
+    }
 
     json_dir = Path(args.json_folder)
     if not json_dir.exists():
@@ -196,40 +219,66 @@ def main():
         sys.exit(1)
 
     passing, failing, suppressed, no_checkm = [], [], [], []
-    
-    # --- NUEVO: Convertimos la lista a un set para búsquedas rápidas ---
-    whitelist = set(args.whitelist) if args.whitelist else set()
+    whitelist = set(args.whitelist)
 
-    # 1. Parse all report files
     for jfile in files:
         for rec in load_jsonl_file(jfile):
             g = parse_report(rec)
 
-            # --- NUEVO: Si está en la whitelist, lo pasamos directamente y saltamos el resto de comprobaciones ---
+            # Whitelist always wins
             if g["accession"] in whitelist:
                 passing.append(g)
                 continue
 
-            if g["status"].lower() == "suppressed":
+            is_suppressed = g["status"].lower() == "suppressed"
+            is_no_checkm  = g["completeness"] is None
+            is_failing    = (not is_suppressed
+                             and not is_no_checkm
+                             and g["completeness"] < args.threshold)
+
+            if is_suppressed:
                 suppressed.append(g)
-            elif g["completeness"] is None:
+            elif is_no_checkm:
                 no_checkm.append(g)
-            elif g["completeness"] < args.threshold:
+            elif is_failing:
                 failing.append(g)
             else:
                 passing.append(g)
 
-    # 2. Write rich report
+    # Blacklist sólo incluye los grupos con filtro activo
+    blacklist = []
+    if filters_active["suppressed"]:
+        blacklist.extend(suppressed)
+    else:
+        passing.extend(suppressed)
+
+    if filters_active["no_checkm"]:
+        blacklist.extend(no_checkm)
+    else:
+        passing.extend(no_checkm)
+
+    if filters_active["completeness"]:
+        blacklist.extend(failing)
+    else:
+        passing.extend(failing)
+
+    # Write rich report
     report_path = Path(args.output)
     report_path.parent.mkdir(parents=True, exist_ok=True)
-    report_text = build_report(passing, failing, suppressed, no_checkm,
-                               args.threshold, args.json_folder)
+    report_text = build_report(
+        passing,
+        failing,
+        suppressed,
+        no_checkm,
+        args.threshold,
+        args.json_folder,
+        filters_active,
+        len(blacklist),   # ← contador real
+    )
     report_path.write_text(report_text, encoding="utf-8")
 
-    # 3. Write accession blacklist + optional physical deletion
-    blacklist = failing + suppressed + no_checkm
-    acc_path  = report_path.with_name(report_path.stem + "_accessions.txt")
-
+    # Write blacklist + optional physical deletion
+    acc_path = report_path.with_name(report_path.stem + "_accessions.txt")
     with open(acc_path, "w") as f_acc:
         for g in blacklist:
             acc_id = accession_with_underscore(g["accession"])
@@ -244,8 +293,12 @@ def main():
 
     total = len(passing) + len(blacklist)
     print(f"[INFO] Processed {total} genomes.")
-    print(f"[INFO] Passing: {len(passing)} | Failing: {len(failing)} | "
-          f"Suppressed: {len(suppressed)} | No CheckM: {len(no_checkm)}")
+    print(f"[INFO] Active filters : suppressed={filters_active['suppressed']}  "
+          f"no_checkm={filters_active['no_checkm']}  "
+          f"completeness={filters_active['completeness']}")
+    print(f"[INFO] Passing: {len(passing)} | Failing: {len(failing) if filters_active['completeness'] else 0} | "
+          f"Suppressed: {len(suppressed) if filters_active['suppressed'] else 0} | "
+          f"No CheckM: {len(no_checkm) if filters_active['no_checkm'] else 0}")
     print(f"[INFO] Report    : {report_path}")
     print(f"[INFO] Blacklist : {acc_path}  ({len(blacklist)} entries)")
 

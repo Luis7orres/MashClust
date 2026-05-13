@@ -66,13 +66,24 @@ rule filter_quality:
         genomes_dir = rules.download_genomes.output.genomes_dir
     output:
         blacklist = os.path.join(DIR_DL, "quality_report_accessions.txt"),
-        report = os.path.join(DIR_DL, "quality_report.txt")
+        report    = os.path.join(DIR_DL, "quality_report.txt")
     log:
         os.path.join(LOGS, "0.5-quality_filter.log")
     params:
-        threshold = config["params"]["quality_filter"]["threshold"],
-        clean_arg = lambda wildcards: f"--clean-dir {DIR_DL}/genomes" if config["params"]["quality_filter"]["enabled"] else "",
-        whitelist_arg = lambda wildcards: f"--whitelist {' '.join(config['reference']['accession'])}" if config["reference"]["enabled"] else ""
+        threshold       = config["params"]["quality_filter"]["threshold"],
+        clean_arg       = lambda wildcards: f"--clean-dir {DIR_DL}/genomes"
+                          if config["params"]["quality_filter"]["enabled"] else "",
+        whitelist_arg   = lambda wildcards: f"--whitelist {' '.join(config['reference']['accession'])}"
+                          if config["reference"]["enabled"] else "",
+        suppressed_arg  = lambda wildcards: ""
+                          if config["params"]["quality_filter"]["filter_suppressed"]
+                          else "--no-filter-suppressed",
+        no_checkm_arg   = lambda wildcards: ""
+                          if config["params"]["quality_filter"]["filter_no_checkm"]
+                          else "--no-filter-no-checkm",
+        completeness_arg = lambda wildcards: ""
+                           if config["params"]["quality_filter"]["filter_completeness"]
+                           else "--no-filter-completeness"
     shell:
         """
         python3 {SCRIPTS}/0.5-checkm-filter.py \
@@ -80,7 +91,11 @@ rule filter_quality:
             --threshold {params.threshold} \
             --output {output.report} \
             {params.clean_arg} \
-            {params.whitelist_arg} 2>&1 | tee {log}
+            {params.whitelist_arg} \
+            {params.suppressed_arg} \
+            {params.no_checkm_arg} \
+            {params.completeness_arg} \
+            2>&1 | tee {log}
         """
 
 rule sketch_and_filter:

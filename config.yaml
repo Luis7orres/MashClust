@@ -35,6 +35,9 @@ params:
   quality_filter:
     enabled: true             # Set to false to skip quality filtering
     threshold: 90.0           # Completeness threshold (%)
+    filter_suppressed: true    # blacklist status='suppressed'
+    filter_no_checkm: false     # blacklist genomes without CheckM metadata
+    filter_completeness: true  # blacklist genomes below threshold
     
   download:
     keep_zip: false
